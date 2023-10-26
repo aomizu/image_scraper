@@ -15,15 +15,11 @@ pip install requests
 pip install selenium
 ```
 
-### macOS
-```
-brew install python-tk
-```
-
 
 ## Usage
 
-Run gui.py
+Navigate to the folder
+Run run.py
 
 ```
 python3 run.py
