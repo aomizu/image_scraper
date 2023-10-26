@@ -5,8 +5,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import re
 from urllib.parse import urljoin
-import tkinter as tk
-import url_converter
 import os
 from time import sleep
 from concurrent.futures import ThreadPoolExecutor
@@ -57,14 +55,15 @@ def initialize_webdriver():
         options.headless = True
         user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'    
         options.add_argument('user-agent={0}'.format(user_agent))
-        options.add_argument("--window-size=1920,1200 --header='accept-language: en-US,en;q=0.9'")
+        options.add_argument("--header='accept-language: en-US,en;q=0.9'")
+        options.add_argument("--headless")
         webdriver_instance = webdriver.Chrome(options=options)
 
 
 def get_source_code(url):
     initialize_webdriver()
     webdriver_instance.get(url)
-    print(webdriver_instance.page_source)
+    # print(webdriver_instance.page_source)
     return webdriver_instance.page_source
 
 
@@ -101,12 +100,10 @@ def get_images(source_code, url):
     return images
 
 
-def download(url, folder_name):
+def download(url, destination_path):
     extension = check_file_extension(url)
     name = check_name(url)
-    if not os.path.exists(os.path.join(os.path.expanduser('~'), './image_scraper')):
-        os.makedirs(os.path.join(os.path.expanduser('~'), './image_scraper'))
-    os.chdir(os.path.join(os.path.expanduser('~'), './image_scraper'))
+    os.chdir(destination_path)
     if(extension == "No image found!" or name == "No image found!"):
         return
 
@@ -115,21 +112,19 @@ def download(url, folder_name):
     }
     try:
         response = requests.get(url, headers=headers, timeout=timeout, stream=True)
-        print('Image ' + name + extension + ' is being downloaded...')
+        print('Saving ' + name + extension + '...')
     except:
         print('Image ' + name + extension + " couldn't be downloaded.")
 
     if response.status_code == 200:
-        if not os.path.exists(folder_name):
-            os.makedirs(folder_name)
-        with open(folder_name + "/" + name + extension, 'wb') as file:
+        with open(destination_path + "/" + name + extension, 'wb') as file:
             file.write(response.content)
         print(name + extension)
-        print('Image downloaded successfully.')
+        print('Image saved successfully.')
     else:
         print("Image couldn't be downloaded. Status Code: " + str(response.status_code) + '.')
 
-def download_images(urls, folder_name):
+def download_images(urls, destination_path):
     with ThreadPoolExecutor() as executor:
         for url in urls:
-            executor.submit(download, url, folder_name)
+            executor.submit(download, url, destination_path)

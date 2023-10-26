@@ -1,6 +1,7 @@
 import urllib.parse
 
 
+# Shortens a URL to the base URL of an image (e.g. https://www.example.com/image.jpg?width=1000 -> https://www.example.com/image.jpg)
 def url_converter(url):
     parsed_url = urllib.parse.unquote(url)
     if parsed_url.find(".jpg") != -1:
