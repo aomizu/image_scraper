@@ -4,6 +4,8 @@ A python script for downloading max resolution images from any website.
 ## What it does
 The script is running through the page source for any image tags and image references. It removes any parameters that might scale down or convert the image to a lower resolution.
 
+For example anywebsite.com/image.jpg?&w=3840&q=75 will download anywebsite.com/image.jpg instead.
+
 ## Prerequisites
 - Python 3
   - Modules
@@ -19,8 +21,9 @@ pip install selenium
 ## Usage
 
 Navigate to the folder
-Run run.py
 
+
+Enter
 ```
 python3 run.py
 ```
